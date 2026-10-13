@@ -482,23 +482,26 @@ if ask:
         except Exception as exc:
             st.error(f"Unable to process the paper: {exc}")
 
-# Render the latest answer outside the button event. Streamlit reruns the script
-# after most interactions; session state keeps the answer available during the
-# current session instead of making it disappear after a navigation click.
+# Render the latest answer outside the button event.
+# Use native Streamlit containers instead of opening an HTML <div> in one
+# st.markdown call and closing it in another. Streamlit renders each call as
+# a separate block, so split HTML wrappers can cause content styling/layout
+# problems and, on some themes, make the answer appear missing.
 last_result = st.session_state.get("last_result")
 if last_result:
     last_question = st.session_state.get("last_question", "")
     last_paper_name = st.session_state.get("last_paper_name", "your uploaded paper")
-    st.markdown(
-        f"<div class='panel'><div class='panel-title'>✨ &nbsp; Copilot Answer</div>"
-        f"<div class='muted' style='margin-bottom:10px'>Question: {html.escape(last_question)} · Paper: {html.escape(last_paper_name)}</div>"
-        f"<div class='answer-box'>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(last_result.get("answer", "No answer was generated."))
-    st.markdown("</div></div>", unsafe_allow_html=True)
 
-    st.markdown('<div class="panel"><div class="panel-title">🧾 &nbsp; Source Evidence</div>', unsafe_allow_html=True)
+    st.markdown("## ✨ Copilot Answer")
+    st.caption(f"Question: {last_question} · Paper: {last_paper_name}")
+    with st.container(border=True):
+        # Explicitly render the generated Markdown as normal Streamlit content.
+        st.markdown(
+            last_result.get("answer", "No answer was generated."),
+            unsafe_allow_html=False,
+        )
+
+    st.markdown("## 🧾 Source Evidence")
     if not last_result.get("sources"):
         st.info("No relevant evidence was retrieved for this question.")
     else:
@@ -506,10 +509,19 @@ if last_result:
             score = source.get("score")
             score_text = f" · RRF score {score:.4f}" if isinstance(score, (int, float)) else ""
             page = source.get("page", "?")
-            with st.expander(f"Source {i}  ·  PDF page {page}{score_text}", expanded=(i == 1)):
-                st.write(source.get("text", "No passage text available."))
-    st.caption("AI-generated answers may contain errors. Check important claims against the source passages above.")
-    st.markdown("</div>", unsafe_allow_html=True)
+            with st.expander(
+                f"Source {i} · PDF page {page}{score_text}",
+                expanded=(i == 1),
+            ):
+                st.markdown(
+                    source.get("text", "No passage text available."),
+                    unsafe_allow_html=False,
+                )
+
+    st.info(
+        "AI-generated answers may contain errors. Check important claims "
+        "against the source passages above."
+    )
 
 st.markdown(
     "<div style='text-align:center;color:#8794b5;font-size:.78rem;padding:18px'>Research Paper Copilot · Built with Streamlit, FAISS, BM25 and Groq</div>",
