@@ -514,8 +514,8 @@ def _convert_source_citations(answer, source_map):
             return ""
 
         return " ".join(
-            f"[PDF page {page}]" for page in pages
-        )
+    f"[PDF page {page}]" for page in dict.fromkeys(pages)
+)
 
     answer = citation_pattern.sub(replace_citation, answer)
 
