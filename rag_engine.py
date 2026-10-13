@@ -472,22 +472,16 @@ def _prepare_context(retrieved_chunks):
     return "\n\n".join(context_parts), source_map
 
 
+
 def _convert_source_citations(answer, source_map):
     """
-    Convert valid [S1] citations to [PDF page N] citations.
-
-    Unknown source IDs are removed. This validates citation identity,
-    but does not independently prove that a cited passage supports
-    the claim attached to it.
+    Accept source-ID citations only, map them to PDF pages,
+    and remove unverified page citations written directly by the model.
     """
     invalid_citation_found = False
+    page_markers = {}
 
-    citation_pattern = re.compile(
-        r"\[((?:S\d+)(?:\s*,\s*S\d+)*)\]",
-        flags=re.IGNORECASE
-    )
-
-    def replace_citation(match):
+    def replace_source_ids(match):
         nonlocal invalid_citation_found
 
         source_ids = re.findall(
@@ -496,7 +490,7 @@ def _convert_source_citations(answer, source_map):
             flags=re.IGNORECASE
         )
 
-        pages = []
+        verified_pages = []
 
         for source_id in source_ids:
             source_id = source_id.upper()
@@ -507,50 +501,62 @@ def _convert_source_citations(answer, source_map):
 
             page = source_map[source_id]["page"]
 
-            if page not in pages:
-                pages.append(page)
+            if page not in verified_pages:
+                verified_pages.append(page)
 
-        if not pages:
+        if not verified_pages:
             return ""
 
-        return " ".join(
-    f"[PDF page {page}]" for page in dict.fromkeys(pages)
-)
+        # Use temporary markers so citations generated from valid
+        # source IDs can be distinguished from model-written page refs.
+        markers = []
 
-    answer = citation_pattern.sub(replace_citation, answer)
+        for page in verified_pages:
+            marker = f"@@VERIFIED_PDF_PAGE_{page}@@"
+            page_markers[marker] = f"[PDF page {page}]"
+            markers.append(marker)
 
-    # Remove unsupported page citations that the model may have
-    # generated directly instead of using the required source IDs.
-    valid_pages = {
-        str(source["page"]) for source in source_map.values()
-    }
+        return " ".join(markers)
 
-    def validate_page_citation(match):
-        nonlocal invalid_citation_found
-
-        page = match.group(1)
-
-        if page not in valid_pages:
-            invalid_citation_found = True
-            return ""
-
-        return match.group(0)
-
+    # Convert only valid source-ID citations first.
     answer = re.sub(
-        r"\[PDF\s+page\s+(\d+)\]",
-        validate_page_citation,
+        r"\[((?:S\d+)(?:\s*,\s*S\d+)*)\]",
+        replace_source_ids,
         answer,
         flags=re.IGNORECASE
     )
 
+    # Remove page citations written directly by the model.
+    # These have not been verified through a source ID.
+    direct_page_pattern = re.compile(
+        r"\[\s*PDF\s+page\s+\d+\s*\]",
+        flags=re.IGNORECASE
+    )
+
+    if direct_page_pattern.search(answer):
+        invalid_citation_found = True
+
+    answer = direct_page_pattern.sub("", answer)
+
+    # Restore only page citations mapped from valid source IDs.
+    for marker, citation in page_markers.items():
+        answer = answer.replace(marker, citation)
+
+    # Clean up whitespace left by removed citations.
+    answer = re.sub(r"[ \t]{2,}", " ", answer)
+    answer = re.sub(r" +([,.;:])", r"\1", answer)
+    answer = re.sub(r"\n{3,}", "\n\n", answer)
+    answer = answer.strip()
+
     if invalid_citation_found:
         answer += (
-            "\n\nNote: One or more unsupported citations were "
-            "removed automatically. Please verify important claims "
-            "against the original paper."
+            "\n\nNote: Some citations could not be verified against "
+            "the retrieved source IDs and were removed. Please check "
+            "the original paper before relying on those claims."
         )
 
-    return answer.strip()
+    return answer
+
 
 
 # --------------------------------------------------
