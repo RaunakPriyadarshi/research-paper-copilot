@@ -603,8 +603,11 @@ QUESTION:
 Write the answer with inline source-ID citations:
 """
 
+    # Keep the output long enough for multi-part questions while avoiding
+    # unexpectedly huge responses. A length finish reason is handled below.
     response = client.chat.completions.create(
         model=model_name,
+        max_tokens=1400,
         messages=[
             {
                 "role": "system",
@@ -622,7 +625,10 @@ Write the answer with inline source-ID citations:
         temperature=0.0,
     )
 
-    answer = response.choices[0].message.content or ""
+    choice = response.choices[0]
+    answer = choice.message.content or ""
+    finish_reason = getattr(choice, "finish_reason", None)
+
     answer = _strip_latex(answer)
     answer = _convert_source_citations(answer, source_map)
 
@@ -632,4 +638,15 @@ Write the answer with inline source-ID citations:
             "the retrieved passages. Try a more specific question."
         )
 
-    return {"answer": answer, "sources": retrieved_chunks}
+    # Make truncation visible rather than letting an incomplete answer appear final.
+    if finish_reason == "length":
+        answer += (
+            "\n\n**Response may be incomplete:** the model reached its output "
+            "limit. Ask a narrower question to get a complete answer."
+        )
+
+    return {
+        "answer": answer,
+        "sources": retrieved_chunks,
+        "finish_reason": finish_reason,
+    }
