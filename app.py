@@ -238,153 +238,6 @@ hr { border-color:#e2e9f8; }
  }
  [data-testid="stSidebar"] .brand-sub { color: #c8d8ff !important; -webkit-text-fill-color:#c8d8ff !important; }
 }
-
-/* FINAL MOBILE WIDGET CONTRAST OVERRIDES */
-.stApp [data-testid="stFileUploader"],
-.stApp [data-testid="stFileUploader"] > section,
-.stApp [data-testid="stFileUploader"] section,
-.stApp [data-testid="stFileUploader"] section > div {
-  background: #ffffff !important;
-  color: #172344 !important;
-  border-color: #b9c9e8 !important;
-}
-.stApp [data-testid="stFileUploader"] button,
-.stApp [data-testid="stFileUploader"] button *,
-.stApp [data-testid="stFileUploader"] small,
-.stApp [data-testid="stFileUploader"] span,
-.stApp [data-testid="stFileUploader"] p {
-  background-color: #ffffff !important;
-  color: #172344 !important;
-  -webkit-text-fill-color: #172344 !important;
-  opacity: 1 !important;
-}
-.stApp div.stButton > button,
-.stApp div.stButton > button p,
-.stApp div.stButton > button span,
-.stApp div.stButton > button div {
-  background-color: #ffffff !important;
-  color: #172344 !important;
-  -webkit-text-fill-color: #172344 !important;
-  opacity: 1 !important;
-  border-color: #c7d5f0 !important;
-}
-.stApp div.stButton > button:hover,
-.stApp div.stButton > button:focus,
-.stApp div.stButton > button:active {
-  background-color: #eaf1ff !important;
-  color: #172344 !important;
-  -webkit-text-fill-color: #172344 !important;
-}
-.stApp div.stButton > button[kind="primary"],
-.stApp div.stButton > button[kind="primary"] *,
-.stApp div.stButton > button[kind="primary"]:hover {
-  background: linear-gradient(110deg,#2168f5,#6848df) !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-/* Keep navigation dark with light text, even on narrow screens. */
-[data-testid="stSidebar"] div.stButton > button,
-[data-testid="stSidebar"] div.stButton > button *,
-[data-testid="stSidebar"] div.stButton > button:hover,
-[data-testid="stSidebar"] div.stButton > button:focus {
-  background: rgba(255,255,255,.08) !important;
-  color: #f0f4ff !important;
-  -webkit-text-fill-color: #f0f4ff !important;
-}
-@media (max-width: 900px) {
-  .stApp [data-testid="stFileUploader"],
-  .stApp [data-testid="stFileUploader"] > section,
-  .stApp [data-testid="stFileUploader"] section,
-  .stApp [data-testid="stFileUploader"] section > div {
-    background: #ffffff !important;
-    color: #172344 !important;
-  }
-  .stApp [data-testid="stFileUploader"] button,
-  .stApp [data-testid="stFileUploader"] button *,
-  .stApp div.stButton > button:not([kind="primary"]),
-  .stApp div.stButton > button:not([kind="primary"]) * {
-    background: #ffffff !important;
-    color: #172344 !important;
-    -webkit-text-fill-color: #172344 !important;
-  }
-}
-
-
-/* FINAL SIDEBAR FIX — must remain the last sidebar-related CSS rule.
-   Streamlit's inner button elements can otherwise keep a white background. */
-[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button *,
-[data-testid="stSidebar"] div.stButton > button,
-[data-testid="stSidebar"] div.stButton > button * {
-  background: transparent !important;
-  background-color: transparent !important;
-  color: #f0f4ff !important;
-  -webkit-text-fill-color: #f0f4ff !important;
-  opacity: 1 !important;
-  box-shadow: none !important;
-  border-color: rgba(220, 231, 255, 0.28) !important;
-}
-
-/* Button itself: navy translucent surface, rounded border. */
-[data-testid="stSidebar"] div[data-testid="stButton"] > button,
-[data-testid="stSidebar"] div.stButton > button {
-  background: rgba(255, 255, 255, 0.055) !important;
-  background-color: rgba(255, 255, 255, 0.055) !important;
-  border: 1px solid rgba(220, 231, 255, 0.22) !important;
-  border-radius: 12px !important;
-  min-height: 42px !important;
-  text-align: left !important;
-}
-
-/* Prevent Streamlit's nested paragraph/span wrappers from becoming white strips. */
-[data-testid="stSidebar"] div[data-testid="stButton"] > button p,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button span,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button div,
-[data-testid="stSidebar"] div.stButton > button p,
-[data-testid="stSidebar"] div.stButton > button span,
-[data-testid="stSidebar"] div.stButton > button div {
-  background: transparent !important;
-  background-color: transparent !important;
-  color: #f0f4ff !important;
-  -webkit-text-fill-color: #f0f4ff !important;
-}
-
-/* Hover/focus remains high-contrast without white inner blocks. */
-[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover,
-[data-testid="stSidebar"] div.stButton > button:hover,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button:focus-visible,
-[data-testid="stSidebar"] div.stButton > button:focus-visible {
-  background: linear-gradient(100deg, #1766f4, #5e37ca) !important;
-  background-color: #2859d7 !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
-}
-
-[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover *,
-[data-testid="stSidebar"] div.stButton > button:hover *,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button:focus-visible *,
-[data-testid="stSidebar"] div.stButton > button:focus-visible * {
-  background: transparent !important;
-  background-color: transparent !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-/* Keep sidebar branding and note legible on phones too. */
-@media (max-width: 900px) {
-  [data-testid="stSidebar"] div[data-testid="stButton"] > button,
-  [data-testid="stSidebar"] div.stButton > button {
-    background: rgba(255, 255, 255, 0.055) !important;
-    background-color: rgba(255, 255, 255, 0.055) !important;
-  }
-  [data-testid="stSidebar"] div[data-testid="stButton"] > button *,
-  [data-testid="stSidebar"] div.stButton > button * {
-    background: transparent !important;
-    background-color: transparent !important;
-    color: #f0f4ff !important;
-    -webkit-text-fill-color: #f0f4ff !important;
-  }
-}
-
 </style>
 """,
     unsafe_allow_html=True,
@@ -508,7 +361,7 @@ st.markdown(
       <div class="kicker" style="color:#9fb8ff;margin-bottom:8px">YOUR PERSONAL RESEARCH WORKSPACE</div>
       <h1>Your AI <span>Research Partner</span></h1>
       <p>Upload a research paper, ask questions, and get accurate,<br>
-      evidence-backed answers from the document.</p>
+      answers grounded in retrieved passages from your document.</p>
       <div class="pills">
         <span class="pill">♧ PDF Analysis</span><span class="pill">⌕ Intelligent Search</span>
         <span class="pill">▣ Cited Answers</span><span class="pill">✧ Key Insights</span>
@@ -618,27 +471,45 @@ if ask:
                     result = rag_engine.generate_answer(
                         question, sources, client, model_name
                     )
+                    # Keep the last result in this browser session so it remains
+                    # visible after normal Streamlit reruns or sidebar navigation.
+                    st.session_state["last_result"] = result
+                    st.session_state["last_question"] = question
+                    st.session_state["last_paper_name"] = uploaded.name
                 finally:
                     if os.path.exists(pdf_path):
                         os.remove(pdf_path)
-
-            st.markdown('<div class="panel"><div class="panel-title">✨ &nbsp; Copilot Answer</div>', unsafe_allow_html=True)
-            st.markdown('<div class="answer-box">', unsafe_allow_html=True)
-            st.markdown(result["answer"])
-            st.markdown("</div></div>", unsafe_allow_html=True)
-
-            st.markdown('<div class="panel"><div class="panel-title">🧾 &nbsp; Source Evidence</div>', unsafe_allow_html=True)
-            if not result["sources"]:
-                st.info("No relevant evidence was retrieved for this question.")
-            else:
-                for i, source in enumerate(result["sources"], start=1):
-                    score = source.get("score")
-                    score_text = f" · RRF score {score:.4f}" if isinstance(score, (int, float)) else ""
-                    with st.expander(f"Source {i}  ·  PDF page {source['page']}{score_text}", expanded=(i == 1)):
-                        st.write(source["text"])
-            st.markdown("</div>", unsafe_allow_html=True)
         except Exception as exc:
             st.error(f"Unable to process the paper: {exc}")
+
+# Render the latest answer outside the button event. Streamlit reruns the script
+# after most interactions; session state keeps the answer available during the
+# current session instead of making it disappear after a navigation click.
+last_result = st.session_state.get("last_result")
+if last_result:
+    last_question = st.session_state.get("last_question", "")
+    last_paper_name = st.session_state.get("last_paper_name", "your uploaded paper")
+    st.markdown(
+        f"<div class='panel'><div class='panel-title'>✨ &nbsp; Copilot Answer</div>"
+        f"<div class='muted' style='margin-bottom:10px'>Question: {html.escape(last_question)} · Paper: {html.escape(last_paper_name)}</div>"
+        f"<div class='answer-box'>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(last_result.get("answer", "No answer was generated."))
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="panel"><div class="panel-title">🧾 &nbsp; Source Evidence</div>', unsafe_allow_html=True)
+    if not last_result.get("sources"):
+        st.info("No relevant evidence was retrieved for this question.")
+    else:
+        for i, source in enumerate(last_result["sources"], start=1):
+            score = source.get("score")
+            score_text = f" · RRF score {score:.4f}" if isinstance(score, (int, float)) else ""
+            page = source.get("page", "?")
+            with st.expander(f"Source {i}  ·  PDF page {page}{score_text}", expanded=(i == 1)):
+                st.write(source.get("text", "No passage text available."))
+    st.caption("AI-generated answers may contain errors. Check important claims against the source passages above.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown(
     "<div style='text-align:center;color:#8794b5;font-size:.78rem;padding:18px'>Research Paper Copilot · Built with Streamlit, FAISS, BM25 and Groq</div>",
