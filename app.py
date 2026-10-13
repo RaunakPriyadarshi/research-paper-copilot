@@ -309,6 +309,34 @@ hr { border-color:#e2e9f8; }
   }
 }
 
+/* Restore the original dark sidebar buttons */
+[data-testid="stSidebar"] div.stButton > button,
+[data-testid="stSidebar"] div.stButton > button *,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button * {
+  background: transparent !important;
+  color: #f0f4ff !important;
+  -webkit-text-fill-color: #f0f4ff !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+[data-testid="stSidebar"] div.stButton > button,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button {
+  background: rgba(255, 255, 255, 0.055) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 12px !important;
+}
+
+[data-testid="stSidebar"] div.stButton > button:hover,
+[data-testid="stSidebar"] div.stButton > button:hover *,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover * {
+  background: linear-gradient(100deg, #1766f4, #5e37ca) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+
 </style>
 """,
     unsafe_allow_html=True,
