@@ -186,9 +186,57 @@ hr { border-color:#e2e9f8; }
 [data-testid="stSidebar"] div.stButton > button p {
   color: #f0f4ff !important;
 }
+/* Mobile contrast safeguards: some mobile browsers/Streamlit themes apply
+   different foreground colors to nested widget elements. */
+.stApp .hero,
+.stApp .hero * { color: #ffffff !important; }
+.stApp .hero .kicker { color: #dbe6ff !important; }
+.stApp .hero h1 span { color: #f0d7ff !important; }
+.stApp .panel, .stApp .panel *,
+.stApp .answer-box, .stApp .answer-box *,
+.stApp .source-card, .stApp .source-card *,
+.stApp .paper-file, .stApp .paper-file *,
+.stApp .stat, .stApp .stat * { -webkit-text-fill-color: currentColor; }
+.stApp .panel, .stApp .answer-box, .stApp .source-card,
+.stApp .paper-file, .stApp .stat { color: #172344 !important; }
+.stApp [data-testid="stTextInput"] label,
+.stApp [data-testid="stTextArea"] label,
+.stApp [data-testid="stFileUploader"] label,
+.stApp [data-testid="stMarkdownContainer"] p,
+.stApp [data-testid="stMarkdownContainer"] li { color: #172344 !important; }
+.stApp [data-testid="stTextInput"] input,
+.stApp [data-testid="stTextArea"] textarea,
+.stApp [data-baseweb="input"] input,
+.stApp [data-baseweb="textarea"] textarea {
+  background: #ffffff !important;
+  color: #172344 !important;
+  -webkit-text-fill-color: #172344 !important;
+  opacity: 1 !important;
+}
+.stApp div.stButton > button,
+.stApp div.stButton > button * {
+  -webkit-text-fill-color: inherit !important;
+}
+.stApp [data-testid="stExpander"] summary,
+.stApp [data-testid="stExpander"] summary * {
+  color: #172344 !important;
+  -webkit-text-fill-color: #172344 !important;
+}
 @media (max-width: 900px) {
- .hero { padding:23px; } .hero:after { display:none; }
+ .hero { padding:23px; }
+ .hero:after { display:none; }
+ .hero h1 { font-size:1.75rem !important; line-height:1.25 !important; }
+ .hero p { font-size:1rem !important; }
  .block-container { padding-left:1rem; padding-right:1rem; }
+ /* Keep contrast independent of the phone's light/dark browser preference. */
+ .stApp, .stApp [data-testid="stMain"] { color: #172344 !important; }
+ .stApp .panel-title, .stApp .muted, .stApp .kicker { color: #435274 !important; }
+ [data-testid="stSidebar"] *,
+ [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] * {
+   color: #f0f4ff !important;
+   -webkit-text-fill-color: #f0f4ff !important;
+ }
+ [data-testid="stSidebar"] .brand-sub { color: #c8d8ff !important; -webkit-text-fill-color:#c8d8ff !important; }
 }
 </style>
 """,
