@@ -238,6 +238,77 @@ hr { border-color:#e2e9f8; }
  }
  [data-testid="stSidebar"] .brand-sub { color: #c8d8ff !important; -webkit-text-fill-color:#c8d8ff !important; }
 }
+
+/* FINAL MOBILE WIDGET CONTRAST OVERRIDES */
+.stApp [data-testid="stFileUploader"],
+.stApp [data-testid="stFileUploader"] > section,
+.stApp [data-testid="stFileUploader"] section,
+.stApp [data-testid="stFileUploader"] section > div {
+  background: #ffffff !important;
+  color: #172344 !important;
+  border-color: #b9c9e8 !important;
+}
+.stApp [data-testid="stFileUploader"] button,
+.stApp [data-testid="stFileUploader"] button *,
+.stApp [data-testid="stFileUploader"] small,
+.stApp [data-testid="stFileUploader"] span,
+.stApp [data-testid="stFileUploader"] p {
+  background-color: #ffffff !important;
+  color: #172344 !important;
+  -webkit-text-fill-color: #172344 !important;
+  opacity: 1 !important;
+}
+.stApp div.stButton > button,
+.stApp div.stButton > button p,
+.stApp div.stButton > button span,
+.stApp div.stButton > button div {
+  background-color: #ffffff !important;
+  color: #172344 !important;
+  -webkit-text-fill-color: #172344 !important;
+  opacity: 1 !important;
+  border-color: #c7d5f0 !important;
+}
+.stApp div.stButton > button:hover,
+.stApp div.stButton > button:focus,
+.stApp div.stButton > button:active {
+  background-color: #eaf1ff !important;
+  color: #172344 !important;
+  -webkit-text-fill-color: #172344 !important;
+}
+.stApp div.stButton > button[kind="primary"],
+.stApp div.stButton > button[kind="primary"] *,
+.stApp div.stButton > button[kind="primary"]:hover {
+  background: linear-gradient(110deg,#2168f5,#6848df) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+/* Keep navigation dark with light text, even on narrow screens. */
+[data-testid="stSidebar"] div.stButton > button,
+[data-testid="stSidebar"] div.stButton > button *,
+[data-testid="stSidebar"] div.stButton > button:hover,
+[data-testid="stSidebar"] div.stButton > button:focus {
+  background: rgba(255,255,255,.08) !important;
+  color: #f0f4ff !important;
+  -webkit-text-fill-color: #f0f4ff !important;
+}
+@media (max-width: 900px) {
+  .stApp [data-testid="stFileUploader"],
+  .stApp [data-testid="stFileUploader"] > section,
+  .stApp [data-testid="stFileUploader"] section,
+  .stApp [data-testid="stFileUploader"] section > div {
+    background: #ffffff !important;
+    color: #172344 !important;
+  }
+  .stApp [data-testid="stFileUploader"] button,
+  .stApp [data-testid="stFileUploader"] button *,
+  .stApp div.stButton > button:not([kind="primary"]),
+  .stApp div.stButton > button:not([kind="primary"]) * {
+    background: #ffffff !important;
+    color: #172344 !important;
+    -webkit-text-fill-color: #172344 !important;
+  }
+}
+
 </style>
 """,
     unsafe_allow_html=True,
