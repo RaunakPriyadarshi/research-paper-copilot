@@ -309,33 +309,81 @@ hr { border-color:#e2e9f8; }
   }
 }
 
-/* Restore the original dark sidebar buttons */
-[data-testid="stSidebar"] div.stButton > button,
-[data-testid="stSidebar"] div.stButton > button *,
+
+/* FINAL SIDEBAR FIX — must remain the last sidebar-related CSS rule.
+   Streamlit's inner button elements can otherwise keep a white background. */
 [data-testid="stSidebar"] div[data-testid="stButton"] > button,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button * {
+[data-testid="stSidebar"] div[data-testid="stButton"] > button *,
+[data-testid="stSidebar"] div.stButton > button,
+[data-testid="stSidebar"] div.stButton > button * {
   background: transparent !important;
+  background-color: transparent !important;
   color: #f0f4ff !important;
   -webkit-text-fill-color: #f0f4ff !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  border-color: rgba(220, 231, 255, 0.28) !important;
 }
 
-[data-testid="stSidebar"] div.stButton > button,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button {
+/* Button itself: navy translucent surface, rounded border. */
+[data-testid="stSidebar"] div[data-testid="stButton"] > button,
+[data-testid="stSidebar"] div.stButton > button {
   background: rgba(255, 255, 255, 0.055) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background-color: rgba(255, 255, 255, 0.055) !important;
+  border: 1px solid rgba(220, 231, 255, 0.22) !important;
   border-radius: 12px !important;
+  min-height: 42px !important;
+  text-align: left !important;
 }
 
-[data-testid="stSidebar"] div.stButton > button:hover,
-[data-testid="stSidebar"] div.stButton > button:hover *,
+/* Prevent Streamlit's nested paragraph/span wrappers from becoming white strips. */
+[data-testid="stSidebar"] div[data-testid="stButton"] > button p,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button span,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button div,
+[data-testid="stSidebar"] div.stButton > button p,
+[data-testid="stSidebar"] div.stButton > button span,
+[data-testid="stSidebar"] div.stButton > button div {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #f0f4ff !important;
+  -webkit-text-fill-color: #f0f4ff !important;
+}
+
+/* Hover/focus remains high-contrast without white inner blocks. */
 [data-testid="stSidebar"] div[data-testid="stButton"] > button:hover,
-[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover * {
+[data-testid="stSidebar"] div.stButton > button:hover,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button:focus-visible,
+[data-testid="stSidebar"] div.stButton > button:focus-visible {
   background: linear-gradient(100deg, #1766f4, #5e37ca) !important;
+  background-color: #2859d7 !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-testid="stSidebar"] div[data-testid="stButton"] > button:hover *,
+[data-testid="stSidebar"] div.stButton > button:hover *,
+[data-testid="stSidebar"] div[data-testid="stButton"] > button:focus-visible *,
+[data-testid="stSidebar"] div.stButton > button:focus-visible * {
+  background: transparent !important;
+  background-color: transparent !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
 
+/* Keep sidebar branding and note legible on phones too. */
+@media (max-width: 900px) {
+  [data-testid="stSidebar"] div[data-testid="stButton"] > button,
+  [data-testid="stSidebar"] div.stButton > button {
+    background: rgba(255, 255, 255, 0.055) !important;
+    background-color: rgba(255, 255, 255, 0.055) !important;
+  }
+  [data-testid="stSidebar"] div[data-testid="stButton"] > button *,
+  [data-testid="stSidebar"] div.stButton > button * {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: #f0f4ff !important;
+    -webkit-text-fill-color: #f0f4ff !important;
+  }
+}
 
 </style>
 """,
