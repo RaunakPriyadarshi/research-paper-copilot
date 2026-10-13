@@ -499,6 +499,48 @@ def _convert_source_citations(answer, source_map):
     return answer
 
 
+def _strip_latex(text):
+    """
+    Replace LaTeX-style formulas with a short pointer to the paper.
+
+    Models sometimes emit raw LaTeX such as (p_{\\eta}(z|x)) which the app
+    cannot render. Prompting alone is not reliable, so remove it here.
+    """
+    placeholder = "(see the paper's equation)"
+
+    # Explicit LaTeX delimiters: $$...$$, \\[...\\], \\(...\\)
+    text = re.sub(
+        r"\$\$.*?\$\$|\\\[.*?\\\]|\\\(.*?\\\)",
+        placeholder,
+        text,
+        flags=re.DOTALL,
+    )
+
+    markers = ("\\", "_{", "^{")
+    out = []
+    i, n = 0, len(text)
+    while i < n:
+        if text[i] == "(":
+            depth, j = 0, i
+            while j < n:
+                if text[j] == "(":
+                    depth += 1
+                elif text[j] == ")":
+                    depth -= 1
+                    if depth == 0:
+                        break
+                j += 1
+            if j < n:
+                segment = text[i : j + 1]
+                if len(segment) <= 500 and any(m in segment for m in markers):
+                    out.append(placeholder)
+                    i = j + 1
+                    continue
+        out.append(text[i])
+        i += 1
+    return "".join(out)
+
+
 # --------------------------------------------------
 # Answer generation
 # --------------------------------------------------
@@ -581,6 +623,7 @@ Write the answer with inline source-ID citations:
     )
 
     answer = response.choices[0].message.content or ""
+    answer = _strip_latex(answer)
     answer = _convert_source_citations(answer, source_map)
 
     if not answer:
