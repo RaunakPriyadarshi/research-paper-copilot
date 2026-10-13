@@ -114,6 +114,76 @@ div.stButton > button[kind="primary"]:hover { background:linear-gradient(110deg,
 [data-testid="stFileUploader"] { background:#f8fbff; border:1px dashed #9cbcff; border-radius:13px; padding:10px; }
 div[data-testid="stExpander"] { background:#fbfdff; border:1px solid #e0e9fa; border-radius:12px; }
 hr { border-color:#e2e9f8; }
+/* ---- Readability / contrast fixes ------------------------------------- */
+/* Keep the main workspace light with consistently dark readable text. */
+.stApp, .stApp p, .stApp li, .stApp label,
+.stApp [data-testid="stMarkdownContainer"],
+.stApp [data-testid="stMarkdownContainer"] p,
+.stApp [data-testid="stMarkdownContainer"] li,
+.stApp [data-testid="stMarkdownContainer"] span {
+  color: #172344;
+}
+/* Inputs: dark typed text, light field, and visible placeholder. */
+.stApp input, .stApp textarea,
+.stApp [data-baseweb="input"] input,
+.stApp [data-baseweb="textarea"] textarea {
+  background-color: #ffffff !important;
+  color: #172344 !important;
+  -webkit-text-fill-color: #172344 !important;
+  caret-color: #172344 !important;
+  border-color: #b9c9e8 !important;
+}
+.stApp input::placeholder, .stApp textarea::placeholder,
+.stApp [data-baseweb="input"] input::placeholder,
+.stApp [data-baseweb="textarea"] textarea::placeholder {
+  color: #667493 !important;
+  -webkit-text-fill-color: #667493 !important;
+  opacity: 1 !important;
+}
+/* Buttons and example-question controls. */
+.stApp div.stButton > button,
+.stApp [data-testid="stFileUploader"] button {
+  color: #172344;
+}
+.stApp div.stButton > button p { color: inherit !important; }
+/* Uploader area and instructions. */
+.stApp [data-testid="stFileUploader"],
+.stApp [data-testid="stFileUploader"] section,
+.stApp [data-testid="stFileUploader"] small,
+.stApp [data-testid="stFileUploader"] span {
+  color: #172344 !important;
+}
+/* Expanders/source evidence: readable whether opened or closed. */
+.stApp [data-testid="stExpander"],
+.stApp [data-testid="stExpander"] details,
+.stApp [data-testid="stExpander"] summary,
+.stApp [data-testid="stExpander"] summary p,
+.stApp [data-testid="stExpander"] [data-testid="stMarkdownContainer"],
+.stApp [data-testid="stExpander"] [data-testid="stMarkdownContainer"] p {
+  color: #172344 !important;
+}
+.stApp [data-testid="stExpander"] details,
+.stApp [data-testid="stExpander"] summary {
+  background-color: #fbfdff !important;
+}
+/* Alerts and status text. */
+.stApp [data-testid="stAlert"] p { color: #172344 !important; }
+/* The sidebar intentionally stays dark, so force light text there. */
+[data-testid="stSidebar"],
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
+[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+[data-testid="stSidebar"] .muted {
+  color: #e9efff !important;
+}
+[data-testid="stSidebar"] .brand-sub { color: #b9c9ee !important; }
+[data-testid="stSidebar"] .sidebar-note { color: #d8e5ff !important; }
+[data-testid="stSidebar"] div.stButton > button,
+[data-testid="stSidebar"] div.stButton > button p {
+  color: #f0f4ff !important;
+}
 @media (max-width: 900px) {
  .hero { padding:23px; } .hero:after { display:none; }
  .block-container { padding-left:1rem; padding-right:1rem; }
@@ -152,7 +222,84 @@ with st.sidebar:
     )
     st.markdown("<div style='height:18px'></div><div class='muted'>Powered by RAG · FAISS · BM25 · Groq</div>", unsafe_allow_html=True)
 
+# ---- Real page routing -------------------------------------------------------
+# The sidebar buttons update active_nav. This block makes that state control
+# the visible page. The Home/Chat workspace below retains the original RAG flow.
+active_nav = st.session_state.get("active_nav", "Home")
+
+if active_nav == "My Papers":
+    st.markdown("# 📚 My Papers")
+    st.markdown("Manage the research paper in your current session.")
+    current_upload = st.session_state.get("paper_upload")
+    if current_upload is not None:
+        size_mb = len(current_upload.getvalue()) / (1024 * 1024)
+        st.markdown(
+            f"<div class='panel'><div class='paper-file'><div class='pdf-icon'>PDF</div>"
+            f"<div style='min-width:0;flex:1'><b>{html.escape(current_upload.name)}</b><br>"
+            f"<span class='muted'>{size_mb:.2f} MB · Available in this session</span></div>"
+            f"<span class='status'>Uploaded</span></div></div>",
+            unsafe_allow_html=True,
+        )
+        if st.button("Open paper workspace", type="primary"):
+            st.session_state.active_nav = "Home"
+            st.rerun()
+    else:
+        st.info("No paper is uploaded in this session yet.")
+        if st.button("Go to Home to upload a PDF", type="primary"):
+            st.session_state.active_nav = "Home"
+            st.rerun()
+    st.stop()
+
+if active_nav == "Insights":
+    st.markdown("# ✨ Research Insights")
+    st.markdown("Use the paper workspace to ask evidence-based questions about the document.")
+    st.markdown(
+        """
+        <div class="panel">
+          <div class="panel-title">What you can explore</div>
+          <ul>
+            <li><b>Research contributions</b> — identify the problem and what the authors add.</li>
+            <li><b>Methods</b> — understand the proposed approach and model design.</li>
+            <li><b>Experiments</b> — find datasets, evaluation metrics, and reported results.</li>
+            <li><b>Limitations</b> — ask what the paper states about weaknesses or future work.</li>
+          </ul>
+          <p class="muted">Answers are grounded in retrieved PDF passages and include source-page evidence.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("Start exploring this paper", type="primary"):
+        st.session_state.active_nav = "Home"
+        st.rerun()
+    st.stop()
+
+if active_nav == "Settings":
+    st.markdown("# ⚙️ Settings")
+    st.markdown("Current application configuration and pipeline details.")
+    st.markdown(
+        """
+        <div class="panel">
+          <div class="panel-title">RAG pipeline</div>
+          <p><b>PDF extraction:</b> PyMuPDF</p>
+          <p><b>Semantic retrieval:</b> Sentence Transformers + FAISS</p>
+          <p><b>Keyword retrieval:</b> BM25</p>
+          <p><b>Ranking:</b> Reciprocal Rank Fusion (hybrid search)</p>
+          <p><b>Answer generation:</b> Groq</p>
+          <p class="muted">Credentials are managed privately through Streamlit Secrets. They are not displayed here.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    if st.button("Return to workspace", type="primary"):
+        st.session_state.active_nav = "Home"
+        st.rerun()
+    st.stop()
+
 # ---- Hero -------------------------------------------------------------------
+if st.session_state.get("active_nav", "Home") == "Chat":
+    st.markdown("## 💬 Chat with your research paper")
+    st.caption("Upload a PDF, choose an example, or type your own question below.")
+
 st.markdown(
     """
     <section class="hero">
