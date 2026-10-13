@@ -1,7 +1,7 @@
-streamlit
+streamlit>=1.40
 pymupdf
-sentence-transformers
 faiss-cpu
+numpy
+sentence-transformers
 rank-bm25
 groq
-numpy
