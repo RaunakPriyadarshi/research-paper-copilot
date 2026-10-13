@@ -411,6 +411,21 @@ def _convert_source_citations(answer, source_map):
     they bypass source-ID validation.
     """
     invalid_citation_found = False
+
+    # Some models emit full-width brackets (e.g. 【S1】) or add suffixes such
+    # as 【S1†L3-L5】. Normalize these to plain [S1] before validation.
+    answer = (
+        answer.replace("【", "[").replace("】", "]")
+        .replace("［", "[").replace("］", "]")
+    )
+    answer = re.sub(
+        r"\[\s*(S\d+(?:\s*[,;]\s*S\d+)*)\s*[†‡:][^\]]*\]",
+        r"[\1]",
+        answer,
+        flags=re.IGNORECASE,
+    )
+    answer = re.sub(r"\[\s*(S\d+)\s*;\s*", r"[\1, ", answer, flags=re.IGNORECASE)
+
     citation_pattern = re.compile(
         r"\[((?:S\d+)(?:\s*,\s*S\d+)*)\]",
         flags=re.IGNORECASE,
