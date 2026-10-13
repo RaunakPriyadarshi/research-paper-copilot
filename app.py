@@ -71,17 +71,19 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
    linear-gradient(110deg,#101b45 0%,#101e50 52%,#21175d 100%);
   box-shadow: 0 16px 38px rgba(51,76,166,.16);
 }
+.hero h1, .hero h1 *, .hero p, .hero .pill { color:#ffffff !important; }
+.hero .kicker { color:#b9ccff !important; }
 .hero:after {
   content:"✦   ·      ✧       ·   ✦       ·      ✧";
   position:absolute; right:25px; top:24px; width:39%; height:100%;
   color:rgba(215,224,255,.48); font-size:22px; letter-spacing:16px;
   line-height:2.5; pointer-events:none;
 }
-.hero h1 { font:800 clamp(1.8rem,3vw,2.7rem) 'Manrope',sans-serif; margin:0 0 7px; letter-spacing:-1.3px; }
-.hero h1 span { color:#d8a8ff; }
-.hero p { font-size:1.02rem; line-height:1.55; color:#e2eaff; margin:0; max-width:650px; }
+.hero h1 { color:#ffffff !important; font:800 clamp(1.8rem,3vw,2.7rem) 'Manrope',sans-serif; margin:0 0 7px; letter-spacing:-1.3px; text-shadow:0 1px 2px rgba(0,0,0,.18); }
+.hero h1 span { color:#e6c8ff !important; }
+.hero p { color:#f1f5ff !important; font-size:1.02rem; line-height:1.55; margin:0; max-width:650px; }
 .pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
-.pill { display:inline-block; border:1px solid rgba(125,176,255,.55); color:#e5edff;
+.pill { display:inline-block; border:1px solid rgba(180,205,255,.75); color:#ffffff !important;
   border-radius:999px; padding:6px 12px; font-size:.78rem; background:rgba(7,25,70,.45); }
 .panel {
   background:var(--panel); border:1px solid rgba(211,222,247,.95);
@@ -193,6 +195,11 @@ hr { border-color:#e2e9f8; }
     unsafe_allow_html=True,
 )
 
+# Preserve the uploaded file outside the file_uploader widget state.
+# Streamlit removes widget state when that widget is not rendered on another page.
+if st.session_state.get("paper_upload") is not None:
+    st.session_state["saved_paper_upload"] = st.session_state["paper_upload"]
+
 # ---- Sidebar ----------------------------------------------------------------
 with st.sidebar:
     st.markdown(
@@ -230,7 +237,7 @@ active_nav = st.session_state.get("active_nav", "Home")
 if active_nav == "My Papers":
     st.markdown("# 📚 My Papers")
     st.markdown("Manage the research paper in your current session.")
-    current_upload = st.session_state.get("paper_upload")
+    current_upload = st.session_state.get("saved_paper_upload") or st.session_state.get("paper_upload")
     if current_upload is not None:
         size_mb = len(current_upload.getvalue()) / (1024 * 1024)
         st.markdown(
@@ -320,7 +327,10 @@ st.markdown(
 left, mid, right = st.columns([1.08, 1.08, 1], gap="medium")
 with left:
     st.markdown('<div class="panel"><div class="panel-title">🔹 &nbsp; 1. Upload a Research Paper</div>', unsafe_allow_html=True)
-    uploaded = st.file_uploader("Drop your PDF here or browse", type=["pdf"], label_visibility="collapsed", key="paper_upload")
+    uploaded_widget = st.file_uploader("Drop your PDF here or browse", type=["pdf"], label_visibility="collapsed", key="paper_upload")
+    if uploaded_widget is not None:
+        st.session_state["saved_paper_upload"] = uploaded_widget
+    uploaded = uploaded_widget or st.session_state.get("saved_paper_upload")
     st.markdown('<div class="muted">PDF format · Up to 200 MB · Text-based PDFs work best</div></div>', unsafe_allow_html=True)
 
 with mid:
